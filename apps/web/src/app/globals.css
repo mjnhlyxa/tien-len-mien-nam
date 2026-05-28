@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-dark: #0D1117;
+  --bg-surface: #161B22;
+  --bg-elevated: #21262D;
+  --primary: #58A6FF;
+  --primary-hover: #79B8FF;
+  --accent-green: #3FB950;
+  --accent-red: #F85149;
+  --accent-gold: #D29922;
+  --card-hearts: #E53935;
+  --card-spades: #1A1A2E;
+  --table-felt: #1B5E20;
+  --text-primary: #F0F6FC;
+  --text-secondary: #8B949E;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-elevated);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Toast animations */
+@keyframes toast-in {
+  from {
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-out {
+  from {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+  }
+}
+
+.toast-enter {
+  animation: toast-in 200ms ease-out forwards;
+}
+
+.toast-exit {
+  animation: toast-out 150ms ease-in forwards;
+}
+
+/* Card animations */
+@keyframes card-deal {
+  from {
+    transform: translateY(-50px) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes card-play {
+  from {
+    transform: translateY(0) scale(1);
+  }
+  to {
+    transform: translateY(-100px) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.card-deal {
+  animation: card-deal 300ms ease-out forwards;
+}
+
+.card-play {
+  animation: card-play 200ms ease-in forwards;
+}
+
+/* Victory confetti */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  animation: confetti-fall 3s linear forwards;
+}
+
+/* Glowing effect for current turn */
+.glow-green {
+  box-shadow: 0 0 20px rgba(63, 185, 80, 0.4);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(88, 166, 255, 0.4);
+}

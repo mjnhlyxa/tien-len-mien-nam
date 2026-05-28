@@ -1,0 +1,21 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "uvicorn src.main:app --reload --port 8000",
+    "build": "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000",
+    "start": "uvicorn src.main:app --host 0.0.0.0 --port 8000"
+  },
+  "dependencies": {
+    "fastapi": "^0.110.0",
+    "uvicorn": "^0.27.1",
+    "motor": "^3.3.2",
+    "pymongo": "^4.6.2",
+    "pydantic": "^2.6.3",
+    "python-dotenv": "^1.0.1"
+  },
+  "devDependencies": {
+    "python": "^3.11"
+  }
+}

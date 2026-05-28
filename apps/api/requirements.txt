@@ -1,0 +1,9 @@
+# Dependencies
+express
+cors
+helmet
+compression
+morgan
+
+# MongoDB
+mongoose

@@ -1,0 +1,133 @@
+import { NextResponse } from 'next/server';
+import connectDB from '@/lib/mongodb';
+import mongoose from 'mongoose';
+
+const RoomSchema = new mongoose.Schema({
+  code: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  isPrivate: { type: Boolean, default: false },
+  maxPlayers: { type: Number, default: 4, min: 2, max: 4 },
+  currentPlayers: [{
+    id: String,
+    name: String,
+    joinedAt: { type: Date, default: Date.now }
+  }],
+  gameId: { type: mongoose.Schema.Types.ObjectId, ref: 'Game', default: null },
+  status: { type: String, enum: ['lobby', 'full', 'playing'], default: 'lobby' },
+}, { timestamps: true });
+
+const Room = mongoose.models.Room || mongoose.model('Room', RoomSchema);
+
+interface RouteParams {
+  params: Promise<{ roomId: string }>;
+}
+
+export async function GET(request: Request, { params }: RouteParams) {
+  const { roomId } = await params;
+  try {
+    await connectDB();
+    const room = await Room.findOne({ code: roomId.toUpperCase() }).lean();
+
+    if (!room) {
+      return NextResponse.json({ success: false, error: 'Phòng không tồn tại' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        id: room._id.toString(),
+        code: room.code,
+        name: room.name,
+        isPrivate: room.isPrivate,
+        maxPlayers: room.maxPlayers,
+        currentPlayers: room.currentPlayers,
+        gameId: room.gameId?.toString() || null,
+        status: room.status,
+        createdAt: room.createdAt
+      }
+    });
+  } catch (error) {
+    console.error(`GET /api/rooms/${roomId} error:`, error);
+    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request, { params }: RouteParams) {
+  const { roomId } = await params;
+  try {
+    const body = await request.json();
+    const { playerId, playerName } = body;
+
+    if (!playerId || !playerName) {
+      return NextResponse.json({ success: false, error: 'Thiếu thông tin người chơi' }, { status: 400 });
+    }
+
+    await connectDB();
+    const room = await Room.findOne({ code: roomId.toUpperCase() });
+
+    if (!room) {
+      return NextResponse.json({ success: false, error: 'Phòng không tồn tại' }, { status: 404 });
+    }
+
+    if (room.currentPlayers.length >= room.maxPlayers) {
+      return NextResponse.json({ success: false, error: 'Phòng đã đầy' }, { status: 409 });
+    }
+
+    if (room.currentPlayers.some(p => p.id === playerId)) {
+      return NextResponse.json({ success: false, error: 'Bạn đã ở trong phòng này' }, { status: 409 });
+    }
+
+    room.currentPlayers.push({ id: playerId, name: playerName });
+    if (room.currentPlayers.length >= room.maxPlayers) {
+      room.status = 'full';
+    }
+
+    await room.save();
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        id: room._id.toString(),
+        code: room.code,
+        name: room.name,
+        isPrivate: room.isPrivate,
+        maxPlayers: room.maxPlayers,
+        currentPlayers: room.currentPlayers,
+        gameId: room.gameId?.toString() || null,
+        status: room.status,
+      }
+    });
+  } catch (error) {
+    console.error(`POST /api/rooms/${roomId} error:`, error);
+    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request, { params }: RouteParams) {
+  const { roomId } = await params;
+  try {
+    const body = await request.json();
+    const { playerId } = body;
+
+    await connectDB();
+    const room = await Room.findOne({ code: roomId.toUpperCase() });
+
+    if (!room) {
+      return NextResponse.json({ success: false, error: 'Phòng không tồn tại' }, { status: 404 });
+    }
+
+    room.currentPlayers = room.currentPlayers.filter(p => p.id !== playerId);
+
+    if (room.currentPlayers.length === 0) {
+      await Room.deleteOne({ _id: room._id });
+    } else {
+      room.status = 'lobby';
+      await room.save();
+    }
+
+    return NextResponse.json({ success: true, message: 'Đã rời phòng' });
+  } catch (error) {
+    console.error(`DELETE /api/rooms/${roomId} error:`, error);
+    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });
+  }
+}
