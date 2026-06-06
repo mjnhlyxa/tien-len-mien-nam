@@ -39,7 +39,7 @@ export interface Room {
   maxPlayers: number;
   currentPlayers: PlayerInRoom[];
   gameId: string | null;
-  status: 'lobby' | 'full' | 'playing';
+  status: 'lobby' | 'full' | 'playing' | 'finished';
   createdAt: Date;
 }
 

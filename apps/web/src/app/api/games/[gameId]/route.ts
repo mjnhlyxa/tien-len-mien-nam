@@ -53,7 +53,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
   try {
     await connectDB();
-    const game = await Game.findById(gameId).lean();
+    const game = await Game.findById(gameId).lean() as any;
 
     if (!game) {
       return NextResponse.json({ success: false, error: 'Trò chơi không tồn tại' }, { status: 404 });

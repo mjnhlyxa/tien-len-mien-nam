@@ -1,12 +1,12 @@
 'use client';
 
-import type { Card } from '@/types';
+import type { Card as CardType } from '@/types';
 import { Card } from './Card';
 
 interface PlayerHandProps {
-  cards: Card[];
+  cards: CardType[];
   selectedIndices: number[];
-  onCardSelect: (card: Card, index: number) => void;
+  onCardSelect: (card: CardType, index: number) => void;
   sortable?: boolean;
   onSort?: (by: 'suit' | 'rank') => void;
   currentPlayerId?: string;

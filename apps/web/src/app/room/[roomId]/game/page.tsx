@@ -226,7 +226,7 @@ export default function GamePage({ params }: { params: Promise<{ roomId: string 
           {/* Top Player */}
           <div className="flex justify-center">
             <PlayerPanel
-              player={game?.players[2] || game?.players[0] || { id: '', name: 'Unknown', isHost: false, connected: true, cardCount: 0 }}
+              player={game?.players[2] || game?.players[0] || { id: '', name: 'Unknown', isHost: false, connected: true, cardCount: 0, cards: [] }}
               isCurrentTurn={currentPlayer?.id === (game?.players[2]?.id || game?.players[0]?.id)}
               position="top"
               showCards={false}
@@ -238,7 +238,7 @@ export default function GamePage({ params }: { params: Promise<{ roomId: string 
             {/* Left Player */}
             <div className="flex-shrink-0">
               <PlayerPanel
-                player={game?.players[0] || { id: '', name: 'Unknown', isHost: false, connected: true, cardCount: 0 }}
+                player={game?.players[0] || { id: '', name: 'Unknown', isHost: false, connected: true, cardCount: 0, cards: [] }}
                 isCurrentTurn={currentPlayer?.id === game?.players[0]?.id}
                 position="left"
                 showCards={false}
@@ -258,7 +258,7 @@ export default function GamePage({ params }: { params: Promise<{ roomId: string 
             {/* Right Player */}
             <div className="flex-shrink-0">
               <PlayerPanel
-                player={game?.players[1] || { id: '', name: 'Unknown', isHost: false, connected: true, cardCount: 0 }}
+                player={game?.players[1] || { id: '', name: 'Unknown', isHost: false, connected: true, cardCount: 0, cards: [] }}
                 isCurrentTurn={currentPlayer?.id === game?.players[1]?.id}
                 position="right"
                 showCards={false}

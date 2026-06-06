@@ -64,7 +64,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       return NextResponse.json({ success: false, error: 'Trò chơi chưa bắt đầu' }, { status: 400 });
     }
 
-    const game = await Game.findById(room.gameId).lean();
+    const game = await Game.findById(room.gameId).lean() as any;
     if (!game) {
       return NextResponse.json({ success: false, error: 'Trò chơi không tồn tại' }, { status: 404 });
     }

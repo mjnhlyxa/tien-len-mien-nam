@@ -101,7 +101,7 @@ export function validateCombination(cards: Card[]): CombinationResult {
     }
     const counts = Array.from(rankCounts.values()).sort((a, b) => b - a);
     if (counts[0] === 3 && counts[1] === 2) {
-      const tripleRank = Array.from(rankCounts.entries()).find(([, [, c]]) => c === 3)?.[0] || 0;
+      const tripleRank = Array.from(rankCounts.entries()).find(([, c]) => c === 3)?.[0] || 0;
       return {
         valid: true,
         type: 'full_house',

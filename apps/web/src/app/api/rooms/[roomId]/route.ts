@@ -26,7 +26,7 @@ export async function GET(request: Request, { params }: RouteParams) {
   const { roomId } = await params;
   try {
     await connectDB();
-    const room = await Room.findOne({ code: roomId.toUpperCase() }).lean();
+    const room = await Room.findOne({ code: roomId.toUpperCase() }).lean() as any;
 
     if (!room) {
       return NextResponse.json({ success: false, error: 'Phòng không tồn tại' }, { status: 404 });
@@ -73,7 +73,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       return NextResponse.json({ success: false, error: 'Phòng đã đầy' }, { status: 409 });
     }
 
-    if (room.currentPlayers.some(p => p.id === playerId)) {
+    if (room.currentPlayers.some((p: any) => p.id === playerId)) {
       return NextResponse.json({ success: false, error: 'Bạn đã ở trong phòng này' }, { status: 409 });
     }
 
@@ -116,7 +116,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       return NextResponse.json({ success: false, error: 'Phòng không tồn tại' }, { status: 404 });
     }
 
-    room.currentPlayers = room.currentPlayers.filter(p => p.id !== playerId);
+    room.currentPlayers = room.currentPlayers.filter((p: any) => p.id !== playerId);
 
     if (room.currentPlayers.length === 0) {
       await Room.deleteOne({ _id: room._id });

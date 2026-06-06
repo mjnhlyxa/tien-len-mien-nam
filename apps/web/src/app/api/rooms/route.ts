@@ -34,11 +34,11 @@ export async function GET() {
     const rooms = await Room.find({
       isPrivate: false,
       status: { $in: ['lobby', 'full'] }
-    }).sort({ createdAt: -1 }).limit(50).lean();
+    }).sort({ createdAt: -1 }).limit(50).lean() as any;
 
     return NextResponse.json({
       success: true,
-      data: rooms.map(r => ({
+      data: (rooms as any).map((r: any) => ({
         id: r._id.toString(),
         code: r.code,
         name: r.name,
